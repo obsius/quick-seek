@@ -1,7 +1,4 @@
-module.exports = {
-	get,
-	set
-};
+module.exports = { get, set };
 
 /**
  * Get an object property.
@@ -11,10 +8,7 @@ module.exports = {
  */
 function get(obj, path) {
 
-	// no path, return object
-	if (!path) {
-		return obj;
-	}
+	if (!obj || !path) { return obj; }
 
 	// number
 	if (typeof path == 'number') {
@@ -43,8 +37,7 @@ function get(obj, path) {
  */
 function set(obj, path, value) {
 
-	// no path, return
-	if (!path) { return; }
+	if (!obj || !path) { return; }
 
 	// number
 	if (typeof path == 'number') {
