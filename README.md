@@ -16,17 +16,17 @@ let x = {
 	yy: [1, 2]
 };
 
-get(x, 'y'); // returns y: { ... }
+console.log(get(x, 'y')); // returns y: { z: 20 }
 
-set(x, 'key', 'value'); // x now has property "key" with value "value"
+console.log(set(x, 'key', 'value')); // x.key = value | returns x
 
-get(x, 'y.z'); // returns 20
+console.log(get(x, 'y.z')); // returns 20
 
-set(x, ['y', 'z'], true); // returns true
+console.log(set(x, ['y', 'z'], true)); // x.y.z = true | returns x.y
 
-get(x, 'yy.0'); // returns 1
+console.log(get(x, 'yy.0')); // returns 1
 
-get(x, ['yy', '1']); // returns 2
+console.log(get(x, ['yy', '1'])); // returns 2
 
 ```
 

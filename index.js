@@ -1,48 +1,25 @@
-module.exports = { get, set };
+module.exports = {
+	del,
+	get,
+	push,
+	run,
+	set
+};
 
 /**
- * Get an object property.
+ * Run a function on an object property.
  * 
  * @param { Object } obj - object to seek a property from
  * @param { Number | String | Array } path - path to property
+ * @param { Function(obj, path) } fn - fn to run on each path
  */
-function get(obj, path) {
+function run(obj, path, fn) {
 
-	if (!obj || !path) { return obj; }
+	if (!obj || !path || !fn) { return; }
 
 	// number
 	if (typeof path == 'number') {
-		return obj[path];
-	}
-
-	// string, split on period
-	if (typeof path == 'string') {
-		path = path.split('.');
-	}
-
-	// array
-	if (Array.isArray(path) && path.length) {
-		return get(obj[path[0]], path.slice(1));
-	}
-
-	return obj;
-}
-
-/**
- * Set an object property.
- * 
- * @param { Object } obj - object to seek a property from
- * @param { Number | String | Array } path - path to property
- * @param { * } value - value to set property to
- */
-function set(obj, path, value) {
-
-	if (!obj || !path) { return; }
-
-	// number
-	if (typeof path == 'number') {
-		obj[path] = value;
-		return;
+		fn(obj, path);
 	}
 
 	// string, split on period
@@ -53,9 +30,60 @@ function set(obj, path, value) {
 	// array
 	if (Array.isArray(path) && path.length) {
 		if (path.length == 1) {
-			obj[path[0]] = value;
+			return fn(obj, path[0]);
 		} else {
-			set(obj[path[0]], path.slice(1), value);
+			return run(obj[path[0]], path.slice(1), fn);
 		}
 	}
+}
+
+/**
+ * Delete an object property.
+ * 
+ * @param { Object } obj - object to seek a property from
+ * @param { Number | String | Array } path - path to property
+ */
+function del(obj, path) {
+	return run(obj, path, (obj, key) => {
+		delete obj[key];
+		return obj;
+	});
+}
+
+/**
+ * Get an object property.
+ * 
+ * @param { Object } obj - object to seek a property from
+ * @param { Number | String | Array } path - path to property
+ */
+function get(obj, path) {
+	return run(obj, path, (obj, key) => obj[key]);
+}
+
+/**
+ * Push to an object property.
+ * 
+ * @param { Object } obj - object to seek a property from
+ * @param { Number | String | Array } path - path to property
+ * @param { * } value - value to push
+ */
+function push(obj, path, value) {
+	return run(obj, path, (obj, key) => {
+		obj[key].push(value);
+		return obj;
+	});
+}
+
+/**
+ * Set an object property.
+ * 
+ * @param { Object } obj - object to seek a property from
+ * @param { Number | String | Array } path - path to property
+ * @param { * } value - value to set property to
+ */
+function set(obj, path, value) {
+	return run(obj, path, (obj, key) => {
+		obj[key] = value;
+		return obj;
+	});
 }
