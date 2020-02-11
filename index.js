@@ -12,10 +12,11 @@ module.exports = {
  * @param { Object } obj - object to seek a property from
  * @param { Number | String | Array } path - path to property
  * @param { Function(obj, path) } fn - fn to run on each path
+ * @param { Boolean } populate - when using a function that sets a value, populate missing parts of the path
  */
-function run(obj, path, fn) {
+function run(obj, path, fn, populate = false) {
 
-	if (!obj || !path || !fn) { return; }
+	if (!obj || !fn || path == null) { return; }
 
 	// number
 	if (typeof path == 'number') {
@@ -32,7 +33,13 @@ function run(obj, path, fn) {
 		if (path.length == 1) {
 			return fn(obj, path[0]);
 		} else {
-			return run(obj[path[0]], path.slice(1), fn);
+
+			// create object or array if the root object is missing this part of the path
+			if (populate && (!obj[path[0]] || typeof obj[path[0]] != 'object')) {
+				obj[path[0]] = {};
+			}
+
+			return run(obj[path[0]], path.slice(1), fn, populate);
 		}
 	}
 }
@@ -85,5 +92,5 @@ function set(obj, path, value) {
 	return run(obj, path, (obj, key) => {
 		obj[key] = value;
 		return obj;
-	});
+	}, true);
 }

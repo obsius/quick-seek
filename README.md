@@ -28,6 +28,8 @@ console.log(get(x, 'yy.0')); // returns 1
 
 console.log(get(x, ['yy', '1'])); // returns 2
 
+console.log(set(x, 'y.yy.yyy', 'z')); // x.y.yy.yyy = z (will populate empty objects) | returns y.yy.yyy
+
 ```
 
 ## Contributing
