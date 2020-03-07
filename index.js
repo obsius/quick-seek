@@ -20,7 +20,7 @@ function run(obj, path, fn, populate = false) {
 
 	// number
 	if (typeof path == 'number') {
-		fn(obj, path);
+		return fn(obj, path);
 	}
 
 	// string, split on period
