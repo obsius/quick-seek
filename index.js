@@ -29,8 +29,10 @@ function run(obj, path, fn, populate = false) {
 	}
 
 	// array
-	if (Array.isArray(path) && path.length) {
-		if (path.length == 1) {
+	if (Array.isArray(path)) {
+		if (path.length == 0) {
+			return fn(obj);
+		} else if (path.length == 1) {
 			return fn(obj, path[0]);
 		} else {
 
@@ -64,7 +66,7 @@ function del(obj, path) {
  * @param { Number | String | Array } path - path to property
  */
 function get(obj, path) {
-	return run(obj, path, (obj, key) => obj[key]);
+	return run(obj, path, (obj, key) => key ? obj[key] : obj);
 }
 
 /**
@@ -76,7 +78,13 @@ function get(obj, path) {
  */
 function push(obj, path, value) {
 	return run(obj, path, (obj, key) => {
-		obj[key].push(value);
+
+		if (key) {
+			obj[key].push(value);
+		} else {
+			obj.push(value);
+		}
+
 		return obj;
 	});
 }
@@ -90,7 +98,11 @@ function push(obj, path, value) {
  */
 function set(obj, path, value) {
 	return run(obj, path, (obj, key) => {
-		obj[key] = value;
+
+		if (key) {
+			obj[key] = value;
+		}
+		
 		return obj;
 	}, true);
 }
