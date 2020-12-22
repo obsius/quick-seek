@@ -13,8 +13,9 @@ module.exports = {
  * @param { Number | String | Array } path - path to property
  * @param { Function(obj, path) } fn - fn to run on each path
  * @param { Boolean } populate - when using a function that sets a value, populate missing parts of the path
+ * @param { Boolean } detectArray - detect array type if a path part is strictly a number
  */
-function run(obj, path, fn, populate = false) {
+function run(obj, path, fn, populate = false, detectArray = false) {
 
 	if (!obj || !fn || path == null) { return; }
 
@@ -38,10 +39,14 @@ function run(obj, path, fn, populate = false) {
 
 			// create object or array if the root object is missing this part of the path
 			if (populate && (!obj[path[0]] || typeof obj[path[0]] != 'object')) {
-				obj[path[0]] = {};
+				if (detectArray && isStrInt(path[1])) {
+					obj[path[0]] = [];
+				} else {
+					obj[path[0]] = {};
+				}
 			}
 
-			return run(obj[path[0]], path.slice(1), fn, populate);
+			return run(obj[path[0]], path.slice(1), fn, populate, detectArray);
 		}
 	}
 }
@@ -95,8 +100,9 @@ function push(obj, path, value) {
  * @param { Object } obj - object to seek a property from
  * @param { Number | String | Array } path - path to property
  * @param { * } value - value to set property to
+ * @param { Boolean } detectArray - detect array type if a path part is strictly a number
  */
-function set(obj, path, value) {
+function set(obj, path, value, detectArray = false) {
 	return run(obj, path, (obj, key) => {
 
 		if (key) {
@@ -104,5 +110,36 @@ function set(obj, path, value) {
 		}
 		
 		return obj;
-	}, true);
+	}, true, detectArray);
+}
+
+/* internal */
+
+function isStrInt(str) {
+
+	if (typeof str == 'string') {
+		for (let i = 0; i < str.length; ++i) {
+
+			let char = str[i];
+
+			if (
+				char != '0' &&
+				char != '1' &&
+				char != '2' &&
+				char != '3' &&
+				char != '4' &&
+				char != '5' &&
+				char != '6' &&
+				char != '7' &&
+				char != '8' &&
+				char != '9'
+			) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	return false;
 }
