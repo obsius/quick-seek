@@ -1,6 +1,7 @@
 module.exports = {
 	del,
 	get,
+	has,
 	push,
 	run,
 	set
@@ -72,6 +73,16 @@ function del(obj, path) {
  */
 function get(obj, path) {
 	return run(obj, path, (obj, key) => key ? obj[key] : obj);
+}
+
+/**
+ * Check if an object has a property.
+ * 
+ * @param { Object } obj - object to seek a property from
+ * @param { Number | String | Array } path - path to property
+ */
+function has(obj, path) {
+	return run(obj, path, (obj, key) => key ? key in obj : false);
 }
 
 /**
