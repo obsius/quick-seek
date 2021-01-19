@@ -70,9 +70,21 @@ function del(obj, path) {
  * 
  * @param { Object } obj - object to seek a property from
  * @param { Number | String | Array } path - path to property
+ * @param { Boolean } throwError - throw an error if the key does not exist
  */
-function get(obj, path) {
-	return run(obj, path, (obj, key) => key ? obj[key] : obj);
+function get(obj, path, throwError) {
+	if (throwError) {
+		return run(obj, path, (obj, key) => {
+
+			if (key == null || !(key in obj)) {
+				throw new Error('Path not found');
+			}
+
+			return obj[key];
+		});
+	} else {
+		return run(obj, path, (obj, key) => key ? obj[key] : obj);
+	}
 }
 
 /**

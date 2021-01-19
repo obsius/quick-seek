@@ -1,6 +1,6 @@
 {
 	"name": "quick-seek",
-	"version": "1.3.0",
+	"version": "1.4.0",
 	"description": "Quick object property resolution.",
 	"homepage": "https://github.com/obsius/quick-seek",
 	"author": "Jeff Seaman <mr.jeffrey.seaman@gmail.com> (https://www.ngc6822.com)",
